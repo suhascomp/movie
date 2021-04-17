@@ -34,7 +34,7 @@ public class CatalogController {
         );
         return list.stream().map(e -> {
             Rating rating =
-            restTemplate.getForObject("http://localhost:8082/rating/getById/" + e.getMovieId(),Rating.class);
+            restTemplate.getForObject("http://movie-rating/rating/getById/" + e.getMovieId(),Rating.class);
 
 //            builder.build()
 //                    .get()
