@@ -3,6 +3,15 @@ package com.movie.movieinfoservice.models;
 public class MovieInfo {
     private int movieId;
     private String name;
+    private String desc;
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
 
     public MovieInfo(int movieId, String name) {
         this.movieId = movieId;

@@ -51,4 +51,13 @@ public class CatalogController {
 //                new CatalogItem("Batman", "Batmen begins", 9 )
 //        );
     }
+
+    @GetMapping("movie-summery/{id}")
+    public CatalogItem getSummery(@PathVariable("id") int id) {
+        MovieInfo movieInfo = restTemplate.getForObject("http://movie-info/info/movie-summery/123", MovieInfo.class);
+        Rating rating =
+                restTemplate.getForObject("http://movie-rating/rating/getById/" + movieInfo.getMovieId(),Rating.class);
+        CatalogItem catalogItem = new CatalogItem(movieInfo.getName(), movieInfo.getDesc(), rating.getRating());
+        return catalogItem;
+    }
 }
