@@ -32,7 +32,7 @@ public class MovieInfoController {
 
     @GetMapping("/movie-summery/{id}")
     public MovieInfo getMovieSummery(@PathVariable("id") int id) {
-        Root rr = restTemplate.getForObject("https://api.themoviedb.org/3/movie/550?api_key="+apiKey, Root.class);
+        Root rr = restTemplate.getForObject("https://api.themoviedb.org/3/movie/"+id+"?api_key="+apiKey, Root.class);
         rr.getTitle();
         MovieInfo movieInfo = new MovieInfo(id, rr.getTitle());
         movieInfo.setDesc(rr.getOverview());

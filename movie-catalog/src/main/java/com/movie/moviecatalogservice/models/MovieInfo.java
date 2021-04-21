@@ -16,9 +16,10 @@ public class MovieInfo {
         this.desc = desc;
     }
 
-    public MovieInfo(int movieId, String name) {
+    public MovieInfo(int movieId, String name, String desc) {
         this.movieId = movieId;
         this.name = name;
+        this.desc = desc;
     }
 
     public int getMovieId() {

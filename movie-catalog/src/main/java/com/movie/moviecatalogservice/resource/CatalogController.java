@@ -3,6 +3,9 @@ package com.movie.moviecatalogservice.resource;
 import com.movie.moviecatalogservice.models.CatalogItem;
 import com.movie.moviecatalogservice.models.MovieInfo;
 import com.movie.moviecatalogservice.models.Rating;
+import com.movie.moviecatalogservice.services.MovieInfoService;
+import com.movie.moviecatalogservice.services.RatingInfoService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,18 +26,23 @@ public class CatalogController {
     @Autowired
     private RestTemplate restTemplate;
 
-//    @Autowired
-//    private WebClient.Builder builder;
+    @Autowired
+    private RatingInfoService ratingInfoService;
+
+    @Autowired
+    private MovieInfoService movieInfoService;
+
+    /*@Autowired
+    private WebClient.Builder builder;*/
 
     @GetMapping("/{userId}")
     public List<CatalogItem> getCatalogByUserId(@PathVariable("userId") int userId) {
         List<MovieInfo> list = Arrays.asList(
-                new MovieInfo(123, "Batman"),
-                new MovieInfo(32, "Transformers")
+                new MovieInfo(123, "Batman", "desc"),
+                new MovieInfo(32, "Transformers" , "desc")
         );
         return list.stream().map(e -> {
-            Rating rating =
-            restTemplate.getForObject("http://movie-rating/rating/getById/" + e.getMovieId(),Rating.class);
+            Rating rating = ratingInfoService.getRating(e);
 
 //            builder.build()
 //                    .get()
@@ -53,11 +61,16 @@ public class CatalogController {
     }
 
     @GetMapping("movie-summery/{id}")
+//    @HystrixCommand(fallbackMethod = "getFallbackCatalog")
     public CatalogItem getSummery(@PathVariable("id") int id) {
-        MovieInfo movieInfo = restTemplate.getForObject("http://movie-info/info/movie-summery/123", MovieInfo.class);
-        Rating rating =
-                restTemplate.getForObject("http://movie-rating/rating/getById/" + movieInfo.getMovieId(),Rating.class);
+        MovieInfo movieInfo = movieInfoService.getMovieInfo(id);
+        Rating rating = ratingInfoService.getRating(movieInfo);
         CatalogItem catalogItem = new CatalogItem(movieInfo.getName(), movieInfo.getDesc(), rating.getRating());
         return catalogItem;
+    }
+
+
+    public CatalogItem getFallbackCatalog(@PathVariable("id") int id) {
+        return new CatalogItem("No name", "No desc",0);
     }
 }
