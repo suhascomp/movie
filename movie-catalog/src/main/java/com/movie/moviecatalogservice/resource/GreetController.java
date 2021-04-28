@@ -1,5 +1,7 @@
 package com.movie.moviecatalogservice.resource;
 
+import com.movie.moviecatalogservice.models.DBSettings;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +29,9 @@ public class GreetController {
     @Value("#{${my.map.dbValues}}")
     private Map<String, String> dbDetails;
 
+    @Autowired
+    private DBSettings dbSettings;
+
     @GetMapping("/welcome")
     public String greetings() {
         return greetings + defaultVal + staticString;
@@ -35,6 +40,11 @@ public class GreetController {
     @GetMapping("/details")
     public String getDetails() {
         return " " + numbers + dbDetails;
+    }
+
+    @GetMapping("/dbSettings")
+    public  String getDbSettings() {
+        return dbSettings.toString();
     }
 
 }
